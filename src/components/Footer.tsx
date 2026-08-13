@@ -26,7 +26,7 @@ export default function Footer({ lang, dict, settings }: FooterProps) {
           {/* Brand Info (4 cols) */}
           <div className="md:col-span-4 flex flex-col items-start">
             <Link href={`/${lang}`} className="flex items-center group mb-4">
-              <span className="text-2xl font-black tracking-tight text-white font-shekasteh hover:text-[#06B6D4] transition-colors duration-300">
+              <span className="text-2xl font-black tracking-wider text-white hover:text-[#06B6D4] transition-colors duration-300">
                 {lang === 'fa' ? 'آرتین' : 'ARTIN'}
               </span>
             </Link>

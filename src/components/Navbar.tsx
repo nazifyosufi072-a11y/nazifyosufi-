@@ -73,7 +73,7 @@ export default function Navbar({ lang, dict }: NavbarProps) {
         <div className="flex items-center justify-between">
           {/* Brand Name Logo (Text Only) */}
           <Link href={`/${lang}`} className="flex items-center group">
-            <span className="text-2xl sm:text-3xl font-black tracking-tight text-white font-shekasteh hover:text-[#06B6D4] transition-colors duration-300">
+            <span className="text-2xl sm:text-3xl font-black tracking-wider text-white hover:text-[#06B6D4] transition-colors duration-300">
               {lang === 'fa' ? 'آرتین' : 'ARTIN'}
             </span>
           </Link>
