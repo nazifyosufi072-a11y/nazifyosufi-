@@ -9,7 +9,7 @@ const defaultLocale = 'en';
 const publicFileRegex = /\.(.*)$/;
 const excludedPaths = ['/api/auth/login', '/api/contact', '/uploads', '/images'];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Skip static assets, favicon, and uploads
@@ -100,6 +100,8 @@ export async function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+export const middleware = proxy;
 
 export const config = {
   matcher: [
