@@ -1,5 +1,7 @@
 import AnimatedSection from '@/components/AnimatedSection';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ lang: string }>;
 }
