@@ -27,7 +27,7 @@ export default function Footer({ lang, dict, settings }: FooterProps) {
           <div className="md:col-span-4 flex flex-col items-start">
             <Link href={`/${lang}`} className="flex items-center group mb-4">
               <span className="text-xl sm:text-2xl font-black tracking-widest text-white font-normal-brand hover:text-[#06B6D4] transition-colors duration-300 uppercase">
-                {lang === 'fa' ? 'آرتین' : 'ARTIN'}
+                ARTIN
               </span>
             </Link>
             <p className="text-sm text-[#c0c0c0] leading-relaxed mb-6 text-start">

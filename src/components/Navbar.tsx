@@ -74,7 +74,7 @@ export default function Navbar({ lang, dict }: NavbarProps) {
           {/* Brand Name Logo (Text Only) */}
           <Link href={`/${lang}`} className="flex items-center group">
             <span className="text-xl sm:text-2xl font-black tracking-widest text-white font-normal-brand hover:text-[#06B6D4] transition-colors duration-300 uppercase">
-              {lang === 'fa' ? 'آرتین' : 'ARTIN'}
+              ARTIN
             </span>
           </Link>
 

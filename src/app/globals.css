@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @font-face {
@@ -31,10 +31,11 @@
 
 .font-normal-brand {
   font-family: 'Outfit', 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  letter-spacing: 0.15em !important;
 }
 
 :lang(fa), [dir="rtl"] {
-  font-family: 'IranNastaliq', 'Vazirmatn', sans-serif !important;
+  font-family: 'Vazirmatn', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 :root {
@@ -47,148 +48,57 @@
   --violet-accent: #7C3AED;
   --cyan-accent: #06B6D4;
 
-  --background: #000000;
-  --foreground: #ffffff;
-
-  --card-bg: #101010;
-  --card-border: #202020;
-  --primary: #404040;
-  --primary-hover: #505050;
-  --primary-rgb: 64, 64, 64;
-
-  /* Safe area inset support */
-  --sat: env(safe-area-inset-top, 0px);
-  --sab: env(safe-area-inset-bottom, 0px);
-  --sal: env(safe-area-inset-left, 0px);
-  --sar: env(safe-area-inset-right, 0px);
-}
-
-html {
-  color-scheme: dark;
-  background-color: #000000;
-  overflow-x: hidden;
-  max-width: 100vw;
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
+  font-family: 'Outfit', 'Vazirmatn', system-ui, sans-serif;
 }
 
 body {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #080808;
+  color: #f0f0f0;
   overflow-x: hidden;
-  max-width: 100vw;
-  padding-top: var(--sat);
-  padding-bottom: var(--sab);
-  padding-left: var(--sal);
-  padding-right: var(--sar);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Ensure all interactive controls meet 44px touch targets */
-button, input, select, textarea, a.btn {
-  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: #080808;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #303030;
+  background: #252525;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #404040;
+  background: #353535;
 }
 
-/* Glassmorphism class */
-.glass {
-  background: rgba(16, 16, 16, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid #303030;
-}
-
-/* Grid background pattern */
-.grid-bg {
-  background-image: radial-gradient(rgba(6, 182, 212, 0.12) 1px, transparent 0);
-  background-size: 28px 28px;
-}
-
-/* Animated gradient blobs (#7C3AED & #06B6D4) */
-.blob {
-  position: absolute;
-  width: min(600px, 90vw);
-  height: min(600px, 90vw);
-  border-radius: 50%;
-  filter: blur(100px);
-  z-index: 0;
-  pointer-events: none;
-}
-
-.blob-violet {
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.45) 0%, transparent 70%);
-}
-
-.blob-cyan {
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.45) 0%, transparent 70%);
-}
-
-@keyframes meshShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+/* Responsive Utilities */
+@layer utilities {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
-.hero-aurora-bg {
-  background: linear-gradient(-45deg, #000000, rgba(124, 58, 237, 0.22), #08090d, rgba(6, 182, 212, 0.22), #000000);
-  background-size: 350% 350%;
-  animation: meshShift 12s ease infinite;
+/* Animation utilities */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
 
-@keyframes floatGlow {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translate(30px, -20px) scale(1.1);
-    opacity: 0.55;
-  }
-}
-
-.animate-glow {
-  animation: floatGlow 10s ease-in-out infinite alternate;
-}
-
-@keyframes floatGentle {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
 }
 
 .animate-float {
-  animation: floatGentle 4s ease-in-out infinite;
+  animation: float 5s ease-in-out infinite;
 }
 
-/* Hide default scrollbars for carousels */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
 }
