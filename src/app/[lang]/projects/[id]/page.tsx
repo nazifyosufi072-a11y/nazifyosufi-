@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/db';
 import { getDictionary } from '@/lib/dictionary';
+
+export const dynamic = 'force-dynamic';
 import AnimatedSection from '@/components/AnimatedSection';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
