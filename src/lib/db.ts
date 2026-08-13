@@ -6,12 +6,19 @@ function getDatabaseUrl() {
   if (process.env.VERCEL) {
     const tmpDbPath = '/tmp/dev.db';
     if (!fs.existsSync(/*turbopackIgnore: true*/ tmpDbPath)) {
-      const sourcePath = path.join(process.cwd(), 'prisma', 'dev.db');
-      if (fs.existsSync(/*turbopackIgnore: true*/ sourcePath)) {
-        try {
-          fs.copyFileSync(sourcePath, tmpDbPath);
-        } catch (e) {
-          console.error('Failed to copy database to /tmp:', e);
+      const sourcePaths = [
+        path.join(process.cwd(), 'prisma', 'dev.db'),
+        path.join(process.cwd(), 'dev.db'),
+      ];
+      for (const sourcePath of sourcePaths) {
+        if (fs.existsSync(/*turbopackIgnore: true*/ sourcePath)) {
+          try {
+            fs.copyFileSync(sourcePath, tmpDbPath);
+            fs.chmodSync(tmpDbPath, 0o666);
+            break;
+          } catch (e) {
+            console.error('Failed to copy database to /tmp:', e);
+          }
         }
       }
     }
@@ -20,13 +27,19 @@ function getDatabaseUrl() {
   return process.env.DATABASE_URL || 'file:./dev.db';
 }
 
-process.env.DATABASE_URL = getDatabaseUrl();
+const dbUrl = getDatabaseUrl();
+process.env.DATABASE_URL = dbUrl;
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
+    datasources: {
+      db: {
+        url: dbUrl,
+      },
+    },
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
 
