@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Service {
+  id            String   @id @default(uuid())
+  titleFa       String
+  titleEn       String
+  descriptionFa String
+  descriptionEn String
+  icon          String
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Technology {
+  id        String   @id @default(uuid())
+  name      String
+  logoUrl   String?  // Class name of icon, or local path, or short name
+  category  String   // 'frontend', 'backend', 'database', 'tools', etc.
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id            String   @id @default(uuid())
+  titleFa       String
+  titleEn       String
+  descriptionFa String
+  descriptionEn String
+  contentFa     String
+  contentEn     String
+  categoryFa    String
+  categoryEn    String
+  image         String
+  demoUrl       String?
+  githubUrl     String?
+  featured      Boolean  @default(false)
+  order         Int      @default(0)
+  challengeFa   String?
+  challengeEn   String?
+  solutionFa    String?
+  solutionEn    String?
+  featuresFa    String?  // Newline separated list
+  featuresEn    String?  // Newline separated list
+  resultsFa     String?
+  resultsEn     String?
+  technologies  String   // Comma-separated list of technology names
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Experience {
+  id             String   @id @default(uuid())
+  organizationFa String
+  organizationEn String
+  positionFa     String
+  positionEn     String
+  startDate      String
+  endDate        String
+  descriptionFa  String
+  descriptionEn  String
+  achievementsFa String?  // Newline separated list
+  achievementsEn String?  // Newline separated list
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Certificate {
+  id              String   @id @default(uuid())
+  nameFa          String
+  nameEn          String
+  issuerFa        String
+  issuerEn        String
+  date            String
+  imageUrl        String
+  descriptionFa   String?
+  descriptionEn   String?
+  verificationUrl String?
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Testimonial {
+  id            String   @id @default(uuid())
+  nameFa        String
+  nameEn        String
+  clientImage   String?
+  companyFa     String?
+  companyEn     String?
+  rating        Int      @default(5)
+  testimonialFa String
+  testimonialEn String
+  order         Int      @default(0)
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  phone       String?
+  projectType String
+  budget      String
+  description String
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SiteSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String   // Plain string or JSON representation
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

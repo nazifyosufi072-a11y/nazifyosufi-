@@ -1,0 +1,183 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "projects": "Projects",
+    "experience": "Experience",
+    "about": "About Us",
+    "certificates": "Certificates",
+    "contact": "Contact",
+    "cta": "Start a Project",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "Your Ideas. Our Expertise. Scalable Software Solutions.",
+    "description": "Artin Team utilizes the latest web technologies to design and develop custom software, robust administration dashboards, and secure digital platforms tailor-made for your enterprise.",
+    "ctaStart": "Start a Project",
+    "ctaProjects": "View Projects"
+  },
+  "services": {
+    "title": "Our Specialized Services",
+    "subtitle": "We provide premium, engineered software solutions to foster your business growth."
+  },
+  "technologies": {
+    "title": "Technologies We Master",
+    "subtitle": "We utilize modern, stable, and highly performant technologies to deploy projects.",
+    "all": "All",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "database": "Database",
+    "tools": "Tools"
+  },
+  "projects": {
+    "title": "Our Recent Projects",
+    "subtitle": "A curated showcase of software systems and web applications we have successfully designed and built.",
+    "all": "All Projects",
+    "viewDetails": "View Project Details",
+    "liveDemo": "Live Demo",
+    "github": "GitHub Source",
+    "details": {
+      "overview": "Project Overview",
+      "challenge": "The Challenge",
+      "solution": "Our Solution",
+      "features": "Key Features",
+      "results": "Final Results",
+      "techUsed": "Technologies Used"
+    }
+  },
+  "experience": {
+    "title": "Professional Experience",
+    "subtitle": "Our timeline of technical growth, national projects, and enterprise collaborations."
+  },
+  "certificates": {
+    "title": "Credentials & Certifications",
+    "subtitle": "International accreditations and technical credentials verified for the Artin Team.",
+    "verify": "Verify Credential"
+  },
+  "about": {
+    "title": "About Artin Team",
+    "subtitle": "Our story, core values, mission, and vision for the future of digital solutions.",
+    "story": "Our Story",
+    "mission": "Our Mission",
+    "vision": "Our Vision"
+  },
+  "whyUs": {
+    "title": "Why Choose Artin Team?",
+    "subtitle": "The core qualities that make us a trusted and reliable technology partner.",
+    "quality": "Exceptional Quality",
+    "qualityDesc": "Uncompromising focus on clean code, scalability, and software engineering best practices.",
+    "custom": "Fully Custom Solutions",
+    "customDesc": "Software designed around your actual workflow, backed by deep business analysis.",
+    "modern": "Cutting-edge Tech Stack",
+    "modernDesc": "Using modern software tooling to ensure top tier performance and future proofing.",
+    "support": "Continuous Maintenance",
+    "supportDesc": "Dedicated support and system maintenance to keep your applications running 24/7."
+  },
+  "testimonials": {
+    "title": "Client Testimonials",
+    "subtitle": "Hear from the leaders and organizations we have partnered with."
+  },
+  "contact": {
+    "title": "Launch Your Project",
+    "subtitle": "Ready to turn your vision into a production-ready digital product? Fill in the details below and we will contact you.",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "projectType": "Project Type",
+    "budget": "Approx. Budget (USD)",
+    "description": "Project Description",
+    "submit": "Send Message",
+    "sending": "Sending...",
+    "success": "Your request has been submitted successfully! We will get in touch shortly.",
+    "error": "An error occurred while submitting. Please try again.",
+    "validation": {
+      "name": "Please enter your name (minimum 3 characters).",
+      "email": "Please enter a valid email address.",
+      "projectType": "Please select a project type.",
+      "budget": "Please choose a budget range.",
+      "description": "Please provide a short description of your project."
+    },
+    "types": {
+      "select": "Select one...",
+      "website": "Corporate / Portfolio Website",
+      "webapp": "Custom Web Application (SaaS)",
+      "mobile": "Mobile Application (iOS/Android)",
+      "software": "Internal Management Software",
+      "admin": "Admin Panel & Dashboard",
+      "api": "API / Backend Architecture",
+      "other": "Other Solutions"
+    },
+    "budgets": {
+      "select": "Select range...",
+      "under1k": "Less than $1,000",
+      "under5k": "$1,000 to $5,000",
+      "under10k": "$5,000 to $10,000",
+      "above10k": "More than $10,000"
+    }
+  },
+  "footer": {
+    "desc": "Artin Team delivers premium digital solutions, customized software, and highly scalable enterprise web platforms.",
+    "copyright": "All rights reserved for Artin Team.",
+    "links": "Quick Links",
+    "services": "Core Services"
+  },
+  "admin": {
+    "login": {
+      "title": "Admin Authentication",
+      "username": "Username",
+      "password": "Password",
+      "submit": "Log In",
+      "loading": "Authenticating...",
+      "error": "Invalid username or password."
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "projects": "Manage Projects",
+      "services": "Manage Services",
+      "technologies": "Manage Tech",
+      "experiences": "Manage Experiences",
+      "certificates": "Manage Certs",
+      "testimonials": "Manage Reviews",
+      "messages": "Received Messages",
+      "settings": "Site Settings",
+      "logout": "Log Out"
+    },
+    "dashboard": {
+      "welcome": "Welcome back, System Admin",
+      "totalProjects": "Total Projects",
+      "totalServices": "Total Services",
+      "totalCertificates": "Total Certificates",
+      "totalMessages": "Total Messages",
+      "unreadMessages": "Unread Messages",
+      "recentMessages": "Recent Messages",
+      "noMessages": "No new messages available.",
+      "viewAll": "View All"
+    },
+    "messages": {
+      "title": "Inbound Inquiries",
+      "empty": "No messages found.",
+      "sender": "Sender",
+      "type": "Project Type",
+      "budget": "Budget",
+      "date": "Received Date",
+      "status": "Status",
+      "read": "Read",
+      "unread": "New",
+      "actions": "Actions",
+      "delete": "Delete Message"
+    },
+    "common": {
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "add": "Add New",
+      "edit": "Edit",
+      "delete": "Delete",
+      "loading": "Loading...",
+      "actions": "Actions",
+      "uploadImage": "Upload Image",
+      "uploading": "Uploading...",
+      "success": "Changes saved successfully.",
+      "error": "An error occurred."
+    }
+  }
+}
