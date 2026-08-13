@@ -29,6 +29,10 @@
   font-family: 'Shekasteh', 'IranNastaliq', cursive, sans-serif !important;
 }
 
+.font-normal-brand {
+  font-family: 'Outfit', 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
 :lang(fa), [dir="rtl"] {
   font-family: 'IranNastaliq', 'Vazirmatn', sans-serif !important;
 }
