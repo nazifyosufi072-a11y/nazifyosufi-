@@ -82,7 +82,7 @@ export default async function LocalizedHomePage({ params }: PageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             
             {/* COLUMN 1: Site Headline & Intro (7 cols) */}
-            <div className="lg:col-span-7 text-start flex flex-col items-start">
+            <div className="lg:col-span-7 text-start flex flex-col items-start order-2 lg:order-1">
               <AnimatedSection delay={0.1} y={30}>
                 {/* Main Title */}
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.2] drop-shadow-md mb-6">
@@ -113,7 +113,7 @@ export default async function LocalizedHomePage({ params }: PageProps) {
             </div>
 
             {/* COLUMN 2: Nazif Yosufi Leader Card (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-end order-1 lg:order-2">
               <AnimatedSection delay={0.2} y={30} className="w-full max-w-md">
                 <div className="p-6 sm:p-8 rounded-3xl border border-[#7C3AED]/30 bg-[#101010]/90 backdrop-blur-2xl shadow-2xl shadow-[#7C3AED]/15 relative overflow-hidden flex flex-col items-center text-center hover:border-[#06B6D4]/50 transition-colors duration-500">
                   
