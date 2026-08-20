@@ -1,6 +1,11 @@
 {
-  "buildCommand": "npx prisma generate && npx prisma db push --accept-data-loss && npx tsx prisma/seed.ts && next build",
-  "installCommand": "npm install",
+  "version": 2,
+  "buildCommand": "npx prisma generate && next build",
+  "installCommand": "npm install --prefer-offline --no-audit",
+  "framework": "nextjs",
+  "git": {
+    "deploymentEnabled": true
+  },
   "env": {
     "DATABASE_URL": "file:./dev.db"
   }
