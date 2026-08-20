@@ -77,8 +77,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const fontFamily = isFa ? "'IranNastaliq', 'Vazirmatn', sans-serif" : "'Outfit', sans-serif";
 
   return (
-    <html lang={lang} dir={direction} className="scroll-smooth dark" style={{ fontFamily }}>
-      <body className="antialiased bg-[#000000] text-white min-h-screen flex flex-col justify-between">
+    <html lang={lang} dir={direction} data-scroll-behavior="smooth" className="scroll-smooth" style={{ fontFamily }}>
+      <body className="antialiased bg-[#F7F4EE] text-[#1C1917] min-h-screen flex flex-col justify-between">
         <Navbar lang={lang} dict={dict} />
         
         <main className="flex-grow pt-16">

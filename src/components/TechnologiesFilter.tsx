@@ -34,15 +34,15 @@ export default function TechnologiesFilter({ technologies, dict }: TechnologiesF
   const getCategoryColor = (category: string) => {
     switch (category.toLowerCase()) {
       case 'frontend':
-        return 'text-sky-500 bg-sky-500/10 border-sky-500/20';
+        return 'text-[#06B6D4] bg-[#06B6D4]/10 border-[#06B6D4]/20';
       case 'backend':
-        return 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
+        return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
       case 'database':
-        return 'text-amber-500 bg-amber-500/10 border-amber-500/20';
+        return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
       case 'tools':
-        return 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20';
+        return 'text-[#6366F1] bg-[#6366F1]/10 border-[#6366F1]/20';
       default:
-        return 'text-slate-500 bg-slate-500/10 border-slate-500/20';
+        return 'text-slate-400 bg-slate-500/10 border-slate-500/20';
     }
   };
 
@@ -57,13 +57,13 @@ export default function TechnologiesFilter({ technologies, dict }: TechnologiesF
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`flex items-center space-x-2 rtl:space-x-reverse px-4 py-2.5 rounded-xl border text-sm font-extrabold transition-all duration-300 cursor-pointer ${
+              className={`flex items-center space-x-2 rtl:space-x-reverse px-4 py-2 rounded-xl border text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? 'bg-[#404040] border-[#505050] text-white shadow-lg shadow-[#404040]/30'
-                  : 'bg-[#202020] border-[#303030] text-[#c0c0c0] hover:border-[#404040] hover:text-white'
+                  ? 'bg-[#121A25] border-[#06B6D4]/40 text-[#F4F7FA] shadow-md shadow-[#06B6D4]/10'
+                  : 'bg-[#0E141D]/80 border-slate-800/60 text-[#A8B1BE] hover:border-slate-700/80 hover:text-[#F4F7FA] hover:bg-[#121A25]'
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-3.5 h-3.5" />
               <span>{cat.label}</span>
             </button>
           );
@@ -79,17 +79,17 @@ export default function TechnologiesFilter({ technologies, dict }: TechnologiesF
           {filteredTechs.map((tech) => (
             <motion.div
               layout
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
               key={tech.id}
-              className="group flex flex-col items-center justify-center p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 hover:bg-white dark:hover:bg-slate-900 hover:shadow-lg dark:hover:shadow-slate-950/50 hover:border-indigo-500/30 dark:hover:border-indigo-500/30 transition-all duration-300 text-center"
+              className="group flex flex-col items-center justify-center p-5 rounded-2xl border border-slate-800/60 bg-[#0E141D]/75 backdrop-blur-md hover:bg-[#121A25] hover:border-[#06B6D4]/30 hover:shadow-lg hover:shadow-black/40 transition-all duration-300 text-center"
             >
-              <div className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border mb-3 ${getCategoryColor(tech.category)}`}>
+              <div className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded border mb-3 ${getCategoryColor(tech.category)}`}>
                 {tech.category}
               </div>
-              <span className="text-base font-semibold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
+              <span className="text-sm font-bold text-[#F4F7FA] group-hover:text-[#06B6D4] transition-colors duration-200">
                 {tech.name}
               </span>
             </motion.div>

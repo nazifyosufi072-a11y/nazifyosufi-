@@ -44,7 +44,6 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error on type
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -88,7 +87,7 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
   };
 
   return (
-    <div className="w-full p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl shadow-xl">
+    <div className="w-full p-8 sm:p-10 rounded-3xl border border-[#D8CBB8] bg-[#FFFFFF] backdrop-blur-xl shadow-xl shadow-stone-900/4">
       <AnimatePresence mode="wait">
         {submitStatus === 'success' ? (
           <motion.div
@@ -97,16 +96,16 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
             exit={{ opacity: 0, scale: 0.95 }}
             className="flex flex-col items-center text-center py-10"
           >
-            <CheckCircle2 className="w-16 h-16 text-emerald-500 mb-4 animate-bounce" />
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+            <CheckCircle2 className="w-16 h-16 text-[#B86B45] mb-4 animate-bounce" />
+            <h3 className="text-2xl font-bold text-[#1C1917] mb-2">
               {lang === 'fa' ? 'سپاسگزاریم!' : 'Thank you!'}
             </h3>
-            <p className="text-slate-600 dark:text-slate-350 max-w-sm mb-6">
+            <p className="text-[#57534E] max-w-sm mb-6 text-sm">
               {dict.contact.success}
             </p>
             <button
               onClick={() => setSubmitStatus('idle')}
-              className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 cursor-pointer"
+              className="px-6 py-2.5 rounded-xl border border-[#D8CBB8] bg-[#EFE9DF] text-xs font-semibold hover:bg-[#E5DDD0] text-[#1C1917] cursor-pointer transition-colors"
             >
               {lang === 'fa' ? 'ارسال پیام جدید' : 'Send another message'}
             </button>
@@ -123,7 +122,7 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Name */}
               <div>
-                <label className="block text-sm font-semibold text-[#e0e0e0] mb-2">
+                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#57534E] mb-2 text-start">
                   {dict.contact.name} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -131,18 +130,18 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`w-full min-h-[44px] px-4 py-3 rounded-xl border bg-[#101010] text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#404040]/50 transition-all ${
+                  className={`w-full min-h-[44px] px-4 py-3 rounded-xl border bg-[#FAF7F2] text-[#1C1917] text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#B86B45]/20 transition-all ${
                     errors.name
-                      ? 'border-red-500'
-                      : 'border-[#303030] focus:border-[#505050]'
+                      ? 'border-red-500/80'
+                      : 'border-[#D8CBB8] focus:border-[#B86B45]'
                   }`}
                 />
-                {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && <p className="text-xs text-red-500 mt-1.5 text-start">{errors.name}</p>}
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-semibold text-[#e0e0e0] mb-2">
+                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#57534E] mb-2 text-start">
                   {dict.contact.email} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -150,20 +149,20 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full min-h-[44px] px-4 py-3 rounded-xl border bg-[#101010] text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#404040]/50 transition-all ${
+                  className={`w-full min-h-[44px] px-4 py-3 rounded-xl border bg-[#FAF7F2] text-[#1C1917] text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#B86B45]/20 transition-all ${
                     errors.email
-                      ? 'border-red-500'
-                      : 'border-[#303030] focus:border-[#505050]'
+                      ? 'border-red-500/80'
+                      : 'border-[#D8CBB8] focus:border-[#B86B45]'
                   }`}
                 />
-                {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-xs text-red-500 mt-1.5 text-start">{errors.email}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Phone */}
               <div>
-                <label className="block text-sm font-semibold text-[#e0e0e0] mb-2">
+                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#57534E] mb-2 text-start">
                   {dict.contact.phone}
                 </label>
                 <input
@@ -172,41 +171,41 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder={lang === 'fa' ? 'اختیاری' : 'Optional'}
-                  className="w-full min-h-[44px] px-4 py-3 rounded-xl border border-[#303030] bg-[#101010] text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#404040]/50 focus:border-[#505050] transition-all"
+                  className="w-full min-h-[44px] px-4 py-3 rounded-xl border border-[#D8CBB8] bg-[#FAF7F2] text-[#1C1917] placeholder-[#8C827A] text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#B86B45]/20 focus:border-[#B86B45] transition-all"
                 />
               </div>
 
               {/* Project Type */}
               <div>
-                <label className="block text-sm font-semibold text-[#e0e0e0] mb-2">
+                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#57534E] mb-2 text-start">
                   {dict.contact.projectType} <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="projectType"
                   value={formData.projectType}
                   onChange={handleChange}
-                  className={`w-full min-h-[44px] px-4 py-3 rounded-xl border bg-[#101010] text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#404040]/50 transition-all ${
+                  className={`w-full min-h-[44px] px-4 py-3 rounded-xl border bg-[#FAF7F2] text-[#1C1917] text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#B86B45]/20 transition-all cursor-pointer ${
                     errors.projectType
-                      ? 'border-red-500'
-                      : 'border-[#303030] focus:border-[#505050]'
+                      ? 'border-red-500/80'
+                      : 'border-[#D8CBB8] focus:border-[#B86B45]'
                   }`}
                 >
-                  <option value="">{dict.contact.types.select}</option>
-                  <option value="website">{dict.contact.types.website}</option>
-                  <option value="webapp">{dict.contact.types.webapp}</option>
-                  <option value="mobile">{dict.contact.types.mobile}</option>
-                  <option value="software">{dict.contact.types.software}</option>
-                  <option value="admin">{dict.contact.types.admin}</option>
-                  <option value="api">{dict.contact.types.api}</option>
-                  <option value="other">{dict.contact.types.other}</option>
+                  <option value="" className="bg-[#FAF7F2] text-[#57534E]">{dict.contact.types.select}</option>
+                  <option value="website" className="bg-[#FAF7F2] text-[#1C1917]">{dict.contact.types.website}</option>
+                  <option value="webapp" className="bg-[#FAF7F2] text-[#1C1917]">{dict.contact.types.webapp}</option>
+                  <option value="mobile" className="bg-[#FAF7F2] text-[#1C1917]">{dict.contact.types.mobile}</option>
+                  <option value="software" className="bg-[#FAF7F2] text-[#1C1917]">{dict.contact.types.software}</option>
+                  <option value="admin" className="bg-[#FAF7F2] text-[#1C1917]">{dict.contact.types.admin}</option>
+                  <option value="api" className="bg-[#FAF7F2] text-[#1C1917]">{dict.contact.types.api}</option>
+                  <option value="other" className="bg-[#FAF7F2] text-[#1C1917]">{dict.contact.types.other}</option>
                 </select>
-                {errors.projectType && <p className="text-xs text-red-500 mt-1">{errors.projectType}</p>}
+                {errors.projectType && <p className="text-xs text-red-500 mt-1.5 text-start">{errors.projectType}</p>}
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-semibold text-[#e0e0e0] mb-2">
+              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#57534E] mb-2 text-start">
                 {dict.contact.description} <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -214,18 +213,18 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
                 rows={5}
                 value={formData.description}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-xl border bg-[#101010] text-white focus:outline-none focus:ring-2 focus:ring-[#404040]/50 transition-all ${
+                className={`w-full px-4 py-3 rounded-xl border bg-[#FAF7F2] text-[#1C1917] focus:outline-none focus:ring-2 focus:ring-[#B86B45]/20 transition-all ${
                   errors.description
-                    ? 'border-red-500'
-                    : 'border-[#303030] focus:border-[#505050]'
+                    ? 'border-red-500/80'
+                    : 'border-[#D8CBB8] focus:border-[#B86B45]'
                 }`}
               />
-              {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description}</p>}
+              {errors.description && <p className="text-xs text-red-500 mt-1.5 text-start">{errors.description}</p>}
             </div>
 
             {/* Submission Status Message */}
             {submitStatus === 'error' && (
-              <div className="flex items-center gap-2 p-4 rounded-xl border border-red-500/20 bg-red-500/5 text-red-500 text-sm">
+              <div className="flex items-center gap-2 p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-600 text-sm">
                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
                 <span>{dict.contact.error}</span>
               </div>
@@ -235,7 +234,7 @@ export default function ContactForm({ lang, dict }: ContactFormProps) {
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center justify-center gap-2 w-full py-4 rounded-xl font-extrabold text-white bg-[#404040] hover:bg-[#505050] disabled:bg-[#303030] border border-[#505050] shadow-lg shadow-[#404040]/30 active:scale-[0.98] transition-all cursor-pointer"
+              className="flex items-center justify-center gap-2 w-full py-4 rounded-xl font-bold text-sm text-[#FAF7F2] bg-[#1C1917] hover:bg-[#B86B45] disabled:opacity-50 shadow-xl shadow-[#1C1917]/10 active:scale-[0.99] transition-all duration-300 cursor-pointer"
             >
               <span>{loading ? dict.contact.sending : dict.contact.submit}</span>
               {!loading && <Send className="w-4 h-4 rtl:-scale-x-100" />}
