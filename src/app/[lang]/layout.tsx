@@ -63,7 +63,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   
   let settings: Record<string, string> = {};
   try {
-    const settingsList = await prisma.siteSetting.findMany();
+    const settingsList = await prisma.siteSetting.findMany().catch(() => []);
     settings = settingsList.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
       acc[curr.key] = curr.value;
       return acc;
