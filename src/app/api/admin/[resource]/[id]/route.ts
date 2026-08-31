@@ -66,19 +66,27 @@ export async function PUT(
 
     // Convert values
     if ('order' in body) {
-      body.order = parseInt(body.order, 10) || 0;
+      body.order = parseInt(String(body.order), 10) || 0;
     }
     if ('rating' in body) {
-      body.rating = parseInt(body.rating, 10) || 5;
+      body.rating = parseInt(String(body.rating), 10) || 5;
     }
-    if ('featured' in body && typeof body.featured === 'string') {
-      body.featured = body.featured === 'true';
+    if ('featured' in body) {
+      body.featured = body.featured === true || body.featured === 'true';
     }
-    if ('published' in body && typeof body.published === 'string') {
-      body.published = body.published === 'true';
+    if ('published' in body) {
+      body.published = body.published === true || body.published === 'true';
     }
-    if ('read' in body && typeof body.read === 'string') {
-      body.read = body.read === 'true';
+    if ('read' in body) {
+      body.read = body.read === true || body.read === 'true';
+    }
+
+    // Default string values
+    if (resource === 'certificates') {
+      if ('nameFa' in body && !body.nameFa) body.nameFa = body.nameEn || 'گواهینامه';
+      if ('nameEn' in body && !body.nameEn) body.nameEn = body.nameFa || 'Certificate';
+      if ('issuerFa' in body && !body.issuerFa) body.issuerFa = body.issuerEn || 'آکادمی';
+      if ('issuerEn' in body && !body.issuerEn) body.issuerEn = body.issuerFa || 'Academy';
     }
 
     const updatedItem = await model.update({
@@ -99,7 +107,7 @@ export async function PUT(
     return NextResponse.json(updatedItem);
   } catch (err: any) {
     console.error(`PUT Item [${err.message}] error:`, err);
-    return NextResponse.json({ error: 'Internal Server Error', details: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update record', details: err.message }, { status: 500 });
   }
 }
 
