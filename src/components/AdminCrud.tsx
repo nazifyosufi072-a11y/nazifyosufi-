@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search, X, Loader2, Image as ImageIcon, CheckCircle, Eye } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Plus, Edit2, Trash2, Search, X, Loader2, Image as ImageIcon, CheckCircle, Eye, ExternalLink, ArrowRight } from 'lucide-react';
 
 interface FieldConfig {
   name: string;
@@ -20,6 +21,7 @@ interface AdminCrudProps {
 }
 
 export default function AdminCrud({ resource, title, description, fields, lang }: AdminCrudProps) {
+  const router = useRouter();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,6 +31,7 @@ export default function AdminCrud({ resource, title, description, fields, lang }
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [saveLoading, setSaveLoading] = useState(false);
   const [actionError, setActionError] = useState('');
+  const [saveAndExit, setSaveAndExit] = useState(false);
 
   const isFa = lang === 'fa';
 
@@ -39,7 +42,7 @@ export default function AdminCrud({ resource, title, description, fields, lang }
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/${resource}`);
+      const res = await fetch(`/api/admin/${resource}?t=${Date.now()}`);
       if (res.ok) {
         const data = await res.json();
         setItems(data);
@@ -133,8 +136,7 @@ export default function AdminCrud({ resource, title, description, fields, lang }
     }
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const executeSave = async (shouldExit: boolean) => {
     setSaveLoading(true);
     setActionError('');
 
@@ -154,7 +156,13 @@ export default function AdminCrud({ resource, title, description, fields, lang }
 
       if (res.ok) {
         setModalOpen(false);
-        fetchItems();
+        if (shouldExit) {
+          router.push(`/${lang}`);
+          router.refresh();
+        } else {
+          fetchItems();
+          router.refresh();
+        }
       } else {
         const data = await res.json();
         setActionError(data.error || 'Failed to save changes.');
@@ -165,6 +173,11 @@ export default function AdminCrud({ resource, title, description, fields, lang }
     } finally {
       setSaveLoading(false);
     }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await executeSave(saveAndExit);
   };
 
   // Filter items based on search
@@ -189,16 +202,28 @@ export default function AdminCrud({ resource, title, description, fields, lang }
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{description}</p>
         </div>
         
-        {/* Only messages cannot be added manually */}
-        {resource !== 'messages' && (
-          <button
-            onClick={handleOpenAdd}
-            className="flex items-center gap-1.5 px-5 py-3 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md cursor-pointer"
+        <div className="flex items-center gap-3">
+          <a
+            href={`/${lang}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm text-xs cursor-pointer"
           >
-            <Plus className="w-5 h-5" />
-            <span>{isFa ? 'افزودن جدید' : 'Add New'}</span>
-          </button>
-        )}
+            <ExternalLink className="w-4 h-4 text-[#B86B45]" />
+            <span>{isFa ? 'مشاهده سایت زنده' : 'View Live Site'}</span>
+          </a>
+
+          {/* Only messages cannot be added manually */}
+          {resource !== 'messages' && (
+            <button
+              onClick={handleOpenAdd}
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md cursor-pointer text-xs sm:text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              <span>{isFa ? 'افزودن جدید' : 'Add New'}</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Toolbar */}
@@ -218,92 +243,82 @@ export default function AdminCrud({ resource, title, description, fields, lang }
       </div>
 
       {/* Data Table */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-900 overflow-hidden">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-850 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-500">
-            <Loader2 className="w-10 h-10 animate-spin text-indigo-500 mb-2" />
-            <span>{isFa ? 'در حال بارگذاری اطلاعات...' : 'Loading data...'}</span>
+          <div className="flex items-center justify-center p-12 text-slate-400">
+            <Loader2 className="w-8 h-8 animate-spin" />
           </div>
         ) : filteredItems.length === 0 ? (
-          <div className="py-20 text-center text-slate-500">
-            {isFa ? 'هیچ موردی یافت نشد.' : 'No records found.'}
+          <div className="text-center py-12 text-slate-400 text-sm">
+            {isFa ? 'موردی یافت نشد.' : 'No records found.'}
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-slate-650 dark:text-slate-450">
-              <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-850 text-slate-700 dark:text-slate-250 font-semibold bg-slate-50/50 dark:bg-slate-950/20">
+            <table className="w-full text-start text-sm">
+              <thead className="bg-slate-50 dark:bg-slate-850/50 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <tr>
                   {fields
                     .filter((f) => f.showInTable !== false)
                     .map((f) => (
-                      <th key={f.name} className="py-3.5 px-6 text-start">
+                      <th key={f.name} className="px-6 py-4">
                         {f.label}
                       </th>
                     ))}
-                  <th className="py-3.5 px-6 text-center">{isFa ? 'عملیات' : 'Actions'}</th>
+                  <th className="px-6 py-4 text-end">{isFa ? 'عملیات' : 'Actions'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-850">
                 {filteredItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-950/10">
+                  <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/30 transition-colors">
                     {fields
                       .filter((f) => f.showInTable !== false)
-                      .map((f) => {
-                        const val = item[f.name];
-                        return (
-                          <td key={f.name} className="py-4 px-6">
-                            {f.type === 'boolean' ? (
-                              <span
-                                className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                  val
-                                    ? 'text-emerald-700 bg-emerald-500/10'
-                                    : 'text-slate-550 bg-slate-100 dark:bg-slate-800'
-                                }`}
-                              >
-                                {val ? (isFa ? 'بله' : 'Yes') : (isFa ? 'خیر' : 'No')}
+                      .map((f) => (
+                        <td key={f.name} className="px-6 py-4 font-medium text-slate-700 dark:text-slate-300 max-w-xs truncate">
+                          {f.type === 'boolean' ? (
+                            item[f.name] ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-500">
+                                {isFa ? 'بله' : 'Yes'}
                               </span>
-                            ) : f.type === 'image' ? (
-                              val ? (
-                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center bg-slate-100 dark:bg-slate-950">
-                                  <ImageIcon className="w-5 h-5 text-indigo-500" />
-                                </div>
-                              ) : (
-                                <span className="text-slate-400">-</span>
-                              )
-                            ) : typeof val === 'string' && val.length > 50 ? (
-                              <span className="line-clamp-1">{val}</span>
                             ) : (
-                              val !== undefined && val !== null ? String(val) : <span className="text-slate-400">-</span>
-                            )}
-                          </td>
-                        );
-                      })}
-                    <td className="py-4 px-6">
-                      <div className="flex items-center justify-center gap-2">
-                        {resource === 'messages' ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-slate-500/10 text-slate-400">
+                                {isFa ? 'خیر' : 'No'}
+                              </span>
+                            )
+                          ) : f.type === 'image' && item[f.name] ? (
+                            <div className="flex items-center gap-2">
+                              <img
+                                src={item[f.name]}
+                                alt=""
+                                className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-slate-700 bg-slate-100"
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = 'none';
+                                }}
+                              />
+                              <span className="truncate text-xs text-slate-500">{item[f.name]}</span>
+                            </div>
+                          ) : (
+                            String(item[f.name] ?? '-')
+                          )}
+                        </td>
+                      ))}
+                    <td className="px-6 py-4 text-end whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleOpenEdit(item)}
+                          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-600 cursor-pointer"
+                          title={isFa ? 'ویرایش' : 'Edit'}
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        {resource !== 'messages' && (
                           <button
-                            onClick={() => handleOpenEdit(item)}
-                            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-indigo-500/10 hover:text-indigo-600 cursor-pointer"
-                            title="Read message"
+                            onClick={() => handleDelete(item.id)}
+                            className="p-2 rounded-lg hover:bg-red-500/10 text-slate-600 dark:text-slate-300 hover:text-red-600 cursor-pointer"
+                            title={isFa ? 'حذف' : 'Delete'}
                           >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleOpenEdit(item)}
-                            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-indigo-500/10 hover:text-indigo-600 cursor-pointer"
-                            title="Edit"
-                          >
-                            <Edit2 className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         )}
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-red-500/10 hover:text-red-600 cursor-pointer"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
                       </div>
                     </td>
                   </tr>
@@ -314,65 +329,61 @@ export default function AdminCrud({ resource, title, description, fields, lang }
         )}
       </div>
 
-      {/* CRUD Edit Modal */}
+      {/* Add / Edit Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 flex flex-col justify-between">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-850 pb-4 mb-6">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                {editingItem
-                  ? `${isFa ? 'ویرایش' : 'Edit'} ${title}`
-                  : `${isFa ? 'ایجاد' : 'Create'} ${title}`}
-              </h3>
-              <button
-                onClick={() => setModalOpen(false)}
-                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-850 text-slate-500 dark:text-slate-400 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto shadow-2xl">
+            {/* Close Button */}
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-6 right-6 rtl:right-auto rtl:left-6 p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
-            {/* Error banner */}
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+              {editingItem
+                ? isFa ? `ویرایش ${title}` : `Edit ${title}`
+                : isFa ? `افزودن ${title}` : `Add New ${title}`}
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+              {isFa ? 'اطلاعات مورد نظر را وارد کرده و ذخیره نمایید.' : 'Fill in the details and save changes.'}
+            </p>
+
             {actionError && (
-              <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/5 text-red-500 text-sm mb-6">
+              <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold">
                 {actionError}
               </div>
             )}
 
-            {/* Form */}
-            <form onSubmit={handleSave} className="space-y-5 flex-grow">
+            <form onSubmit={handleSave} className="space-y-4">
               {fields.map((f) => {
-                const value = formData[f.name] !== undefined ? formData[f.name] : '';
+                const value = formData[f.name] ?? '';
+
                 return (
-                  <div key={f.name} className="space-y-2">
-                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <div key={f.name} className="space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                       {f.label}
                     </label>
 
-                    {/* Disable message reading edit inputs */}
-                    {resource === 'messages' ? (
-                      <div className="p-3.5 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200/50 dark:border-slate-850 text-sm min-h-11">
-                        {String(value)}
-                      </div>
-                    ) : f.type === 'textarea' ? (
+                    {f.type === 'textarea' ? (
                       <textarea
+                        rows={3}
                         value={value}
-                        rows={4}
                         onChange={(e) => handleInputChange(f.name, e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-850 bg-white/70 dark:bg-slate-950/70 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-850 bg-white/70 dark:bg-slate-950/70 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm leading-relaxed"
                       />
                     ) : f.type === 'boolean' ? (
-                      <div className="flex items-center gap-2 py-1">
+                      <div className="flex items-center gap-2 pt-1">
                         <input
                           type="checkbox"
-                          checked={!!value}
                           id={f.name}
+                          checked={Boolean(value)}
                           onChange={(e) => handleInputChange(f.name, e.target.checked)}
-                          className="h-4.5 w-4.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                          className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                         />
-                        <label htmlFor={f.name} className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                          {isFa ? 'فعال / بله' : 'Active / Yes'}
+                        <label htmlFor={f.name} className="text-xs text-slate-600 dark:text-slate-400 font-medium cursor-pointer">
+                          {isFa ? 'فعال / برگزیده' : 'Enabled / Featured'}
                         </label>
                       </div>
                     ) : f.type === 'select' ? (
@@ -428,9 +439,19 @@ export default function AdminCrud({ resource, title, description, fields, lang }
                           </div>
                         </div>
                         {value && (
-                          <div className="inline-flex items-center gap-1 text-[11px] text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">
-                            <CheckCircle className="w-3 h-3" />
-                            <span>{isFa ? 'آپلود شد' : 'Uploaded'}</span>
+                          <div className="flex items-center gap-3">
+                            <div className="inline-flex items-center gap-1 text-[11px] text-emerald-500 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">
+                              <CheckCircle className="w-3 h-3" />
+                              <span>{isFa ? 'آپلود شد' : 'Uploaded'}</span>
+                            </div>
+                            <img
+                              src={value}
+                              alt=""
+                              className="h-10 w-auto rounded border border-slate-200 dark:border-slate-700 object-contain"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = 'none';
+                              }}
+                            />
                           </div>
                         )}
                       </div>
@@ -452,23 +473,40 @@ export default function AdminCrud({ resource, title, description, fields, lang }
               })}
 
               {/* Actions */}
-              <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-100 dark:border-slate-850 mt-8">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-slate-100 dark:border-slate-850 mt-8">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-850 font-semibold text-slate-700 dark:text-slate-300 text-sm cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-850 font-semibold text-slate-700 dark:text-slate-300 text-sm cursor-pointer"
                 >
                   {isFa ? 'انصراف' : 'Cancel'}
                 </button>
+
                 {resource !== 'messages' && (
-                  <button
-                    type="submit"
-                    disabled={saveLoading || uploadingField !== null}
-                    className="flex items-center justify-center gap-1.5 px-6 py-3 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/55 text-sm cursor-pointer"
-                  >
-                    {saveLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                    <span>{isFa ? 'ذخیره تغییرات' : 'Save Changes'}</span>
-                  </button>
+                  <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                    {/* Save & Exit button */}
+                    <button
+                      type="button"
+                      disabled={saveLoading || uploadingField !== null}
+                      onClick={() => executeSave(true)}
+                      className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-5 py-3 rounded-xl font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-50 text-sm cursor-pointer border border-slate-200 dark:border-slate-700"
+                    >
+                      {saveLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                      <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                      <span>{isFa ? 'ذخیره و خروج به سایت' : 'Save & Exit to Site'}</span>
+                    </button>
+
+                    {/* Standard Save */}
+                    <button
+                      type="submit"
+                      disabled={saveLoading || uploadingField !== null}
+                      onClick={() => setSaveAndExit(false)}
+                      className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-6 py-3 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/55 text-sm cursor-pointer shadow-md"
+                    >
+                      {saveLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                      <span>{isFa ? 'ذخیره تغییرات' : 'Save Changes'}</span>
+                    </button>
+                  </div>
                 )}
               </div>
             </form>

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,16 @@ export async function POST(request: Request) {
     });
 
     await Promise.all(promises);
+
+    // Revalidate public caches
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/en');
+      revalidatePath('/fa');
+      revalidatePath(`/[lang]`, 'page');
+    } catch (e) {
+      console.warn('Revalidation notice:', e);
+    }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

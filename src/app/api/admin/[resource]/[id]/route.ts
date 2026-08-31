@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -85,6 +86,16 @@ export async function PUT(
       data: body,
     });
 
+    // Revalidate Next.js cache so changes immediately show on the live site
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/en');
+      revalidatePath('/fa');
+      revalidatePath(`/[lang]`, 'page');
+    } catch (e) {
+      console.warn('Revalidation notice:', e);
+    }
+
     return NextResponse.json(updatedItem);
   } catch (err: any) {
     console.error(`PUT Item [${err.message}] error:`, err);
@@ -107,6 +118,16 @@ export async function DELETE(
     await model.delete({
       where: { id },
     });
+
+    // Revalidate Next.js cache so changes immediately show on the live site
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/en');
+      revalidatePath('/fa');
+      revalidatePath(`/[lang]`, 'page');
+    } catch (e) {
+      console.warn('Revalidation notice:', e);
+    }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

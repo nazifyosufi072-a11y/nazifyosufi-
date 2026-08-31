@@ -137,9 +137,20 @@ function ProjectCard({
           </div>
         )}
 
-        <div className="relative z-10 flex flex-col items-center justify-center">
-          <Terminal className="w-14 h-14 text-[#57534E] group-hover:text-[#B86B45] group-hover:scale-105 transition-all duration-300 stroke-[1.5]" />
-        </div>
+        {project.image ? (
+          <img
+            src={project.image}
+            alt={projectTitle}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = 'none';
+            }}
+          />
+        ) : (
+          <div className="relative z-10 flex flex-col items-center justify-center">
+            <Terminal className="w-14 h-14 text-[#57534E] group-hover:text-[#B86B45] group-hover:scale-105 transition-all duration-300 stroke-[1.5]" />
+          </div>
+        )}
       </div>
 
       {/* Meta & Content Area */}

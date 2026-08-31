@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { ExternalLink, X, Award, Calendar } from 'lucide-react';
+import Image from 'next/image';
 
 interface Certificate {
   id: string;
@@ -48,17 +49,12 @@ const containerVariants: Variants = {
 };
 
 const cardVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 16,
-    scale: 0.98,
-  },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.45,
       ease: 'easeOut',
     },
   },
@@ -72,31 +68,48 @@ export default function CertificatesSection({
 }: CertificatesSectionProps) {
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
 
-  const getLocalizedValue = (cert: Certificate, key: 'name' | 'issuer' | 'description') => {
-    if (key === 'name') return isFa ? cert.nameFa : cert.nameEn;
-    if (key === 'issuer') return isFa ? cert.issuerFa : cert.issuerEn;
-    return isFa ? cert.descriptionFa : cert.descriptionEn;
+  const getLocalizedValue = (
+    item: Certificate,
+    key: 'name' | 'issuer' | 'description'
+  ): string => {
+    let val: string | null | undefined = '';
+    if (key === 'name') val = isFa ? item.nameFa : item.nameEn;
+    if (key === 'issuer') val = isFa ? item.issuerFa : item.issuerEn;
+    if (key === 'description') val = isFa ? item.descriptionFa : item.descriptionEn;
+    return val || '';
   };
 
-  if (!certificates || certificates.length === 0) return null;
-
   return (
-    <section id="certificates" className="py-24 relative border-t border-[#E5DDD0] overflow-hidden bg-[#F7F4EE]">
-      {/* Subtle Ambient Background Lighting Layer */}
-      <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] rounded-full bg-[#B99A62]/4 blur-[140px] pointer-events-none -z-10" />
+    <section
+      id="certificates"
+      aria-label={dict.certificates.title}
+      className="relative py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden"
+    >
+      {/* Background Architectural Watermark */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center select-none overflow-hidden opacity-[0.025]">
+        <span className="text-[16vw] font-black tracking-tighter text-[#1C1917]">
+          VERIFIED
+        </span>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="relative z-10">
         {/* Section Header */}
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
+          viewport={{ once: true, margin: '-80px' }}
           variants={headerVariants}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-20"
         >
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#1C1917]">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider text-[#B86B45] bg-[#EFE9DF] border border-[#D8CBB8] mb-4">
+            <span className="w-2 h-2 rounded-full bg-[#B86B45]" />
+            <span>{dict.certificates.badge}</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[#1C1917]">
             {dict.certificates.title}
           </h2>
+
           <p className="mt-4 text-base sm:text-lg font-normal text-[#57534E]">
             {dict.certificates.subtitle}
           </p>
@@ -129,8 +142,19 @@ export default function CertificatesSection({
               }}
             >
               {/* Cert Image Thumbnail */}
-              <div className="relative w-24 h-20 bg-[#EFE9DF] rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center border border-[#D8CBB8] group-hover:border-[#B86B45]/40 transition-colors">
-                <Award className="w-8 h-8 text-[#B86B45] group-hover:scale-110 transition-transform duration-300 stroke-[1.75]" />
+              <div className="relative w-24 h-24 bg-[#EFE9DF] rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center border border-[#D8CBB8] group-hover:border-[#B86B45]/40 transition-colors p-2">
+                {cert.imageUrl ? (
+                  <img
+                    src={cert.imageUrl || ''}
+                    alt={getLocalizedValue(cert, 'name')}
+                    className="w-full h-full object-contain rounded-lg"
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <Award className="w-8 h-8 text-[#B86B45] group-hover:scale-110 transition-transform duration-300 stroke-[1.75]" />
+                )}
               </div>
 
               {/* Info */}
@@ -172,7 +196,7 @@ export default function CertificatesSection({
               {/* Close Button */}
               <button
                 onClick={() => setSelectedCert(null)}
-                className="absolute top-4 right-4 rtl:right-auto rtl:left-4 p-2 rounded-xl hover:bg-[#EFE9DF] text-[#57534E] hover:text-[#1C1917] border border-[#D8CBB8] cursor-pointer transition-colors"
+                className="absolute top-4 right-4 rtl:right-auto rtl:left-4 p-2 rounded-xl hover:bg-[#EFE9DF] text-[#57534E] hover:text-[#1C1917] border border-[#D8CBB8] cursor-pointer transition-colors z-20"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
@@ -180,14 +204,22 @@ export default function CertificatesSection({
 
               {/* Content layout */}
               <div className="flex flex-col md:flex-row gap-6 items-center">
-                {/* Visual */}
-                <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-[#EFE9DF] rounded-2xl border border-[#D8CBB8]">
-                  <div className="text-center flex flex-col items-center">
-                    <Award className="w-16 h-16 text-[#B86B45] mb-3 stroke-[1.5]" />
-                    <span className="text-xs font-semibold text-[#57534E]">
-                      {getLocalizedValue(selectedCert, 'issuer')}
-                    </span>
-                  </div>
+                {/* Visual Image / Badge */}
+                <div className="w-full md:w-1/2 flex items-center justify-center p-4 bg-[#EFE9DF] rounded-2xl border border-[#D8CBB8] min-h-[220px]">
+                  {selectedCert.imageUrl ? (
+                    <img
+                      src={selectedCert.imageUrl || ''}
+                      alt={getLocalizedValue(selectedCert, 'name')}
+                      className="max-h-72 w-auto object-contain rounded-xl shadow-md"
+                    />
+                  ) : (
+                    <div className="text-center flex flex-col items-center">
+                      <Award className="w-16 h-16 text-[#B86B45] mb-3 stroke-[1.5]" />
+                      <span className="text-xs font-semibold text-[#57534E]">
+                        {getLocalizedValue(selectedCert, 'issuer')}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Details */}
@@ -205,7 +237,7 @@ export default function CertificatesSection({
                   </div>
 
                   {getLocalizedValue(selectedCert, 'description') && (
-                    <p className="text-xs sm:text-sm leading-relaxed text-[#57534E] mb-6">
+                    <p className="text-xs sm:text-sm leading-relaxed text-[#57534E] mb-6 whitespace-pre-line">
                       {getLocalizedValue(selectedCert, 'description')}
                     </p>
                   )}
