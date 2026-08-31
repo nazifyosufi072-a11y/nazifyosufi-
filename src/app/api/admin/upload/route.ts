@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,32 +20,24 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Validate file size (max 5MB)
-    const maxSizeBytes = 5 * 1024 * 1024;
+    // 2. Validate file size (max 4MB)
+    const maxSizeBytes = 4 * 1024 * 1024;
     if (file.size > maxSizeBytes) {
       return NextResponse.json(
-        { error: 'File is too large. Maximum size is 5MB.' },
+        { error: 'File is too large. Maximum size is 4MB.' },
         { status: 400 }
       );
     }
 
-    // 3. Create upload directory if it doesn't exist
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    await mkdir(uploadDir, { recursive: true });
-
-    // 4. Save file with a safe unique name
-    const timestamp = Date.now();
-    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const uniqueFilename = `${timestamp}_${sanitizedFilename}`;
-    const filePath = join(uploadDir, uniqueFilename);
-
+    // 3. Convert image buffer to persistent Base64 Data URL
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
+    const base64 = buffer.toString('base64');
+    const dataUrl = `data:${file.type};base64,${base64}`;
 
     return NextResponse.json({
       success: true,
-      url: `/uploads/${uniqueFilename}`,
+      url: dataUrl,
     });
   } catch (err: any) {
     console.error('Upload API error:', err);
