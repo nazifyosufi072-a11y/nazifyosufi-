@@ -2,6 +2,7 @@ import { getDictionary } from '@/lib/dictionary';
 import { prisma } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 import HeroSection from '@/components/HeroSection';
 import ServicesSection from '@/components/ServicesSection';
@@ -22,7 +23,7 @@ export default async function LocalizedHomePage({ params }: PageProps) {
   const dict = await getDictionary(lang);
   const isFa = lang === 'fa';
 
-  // 1. Fetch data safely from DB with fallback defaults
+  let isDbConnected = false;
   let services: any[] = [];
   let technologies: any[] = [];
   let projects: any[] = [];
@@ -32,12 +33,12 @@ export default async function LocalizedHomePage({ params }: PageProps) {
 
   try {
     const [srvData, techData, projData, expData, certData, setData] = await Promise.all([
-      prisma.service.findMany({ orderBy: { order: 'asc' } }).catch(() => []),
-      prisma.technology.findMany({ orderBy: { order: 'asc' } }).catch(() => []),
-      prisma.project.findMany({ orderBy: { order: 'asc' } }).catch(() => []),
-      prisma.experience.findMany({ orderBy: { order: 'asc' } }).catch(() => []),
-      prisma.certificate.findMany({ orderBy: { order: 'asc' } }).catch(() => []),
-      prisma.siteSetting.findMany().catch(() => []),
+      prisma.service.findMany({ orderBy: { order: 'asc' } }),
+      prisma.technology.findMany({ orderBy: { order: 'asc' } }),
+      prisma.project.findMany({ orderBy: { order: 'asc' } }),
+      prisma.experience.findMany({ orderBy: { order: 'asc' } }),
+      prisma.certificate.findMany({ orderBy: { order: 'asc' } }),
+      prisma.siteSetting.findMany(),
     ]);
 
     services = srvData;
@@ -49,12 +50,14 @@ export default async function LocalizedHomePage({ params }: PageProps) {
       acc[curr.key] = curr.value;
       return acc;
     }, {} as Record<string, string>);
+
+    isDbConnected = true;
   } catch (e) {
-    console.error('Database fetch error (fallback active):', e);
+    console.error('Database connection notice (using baseline structure):', e);
   }
 
-  // Fallback defaults if tables are empty or initializing
-  if (services.length === 0) {
+  // Fallback defaults ONLY if DB server was completely uncontactable
+  if (!isDbConnected) {
     services = [
       { id: '1', titleFa: 'توسعه فرانت‌اند (Frontend)', titleEn: 'Frontend Development', descriptionFa: 'طراحی و توسعه رابط‌های کاربری مدرن، واکنش‌گرا و سریع با استفاده از React و Next.js.', descriptionEn: 'Design and development of modern, responsive, and fast user interfaces using React and Next.js.', icon: 'Layout', order: 1 },
       { id: '2', titleFa: 'توسعه بک‌اند (Backend)', titleEn: 'Backend Development', descriptionFa: 'ساخت سرورهای مقیاس‌پذیر، سیستم‌های احراز هویت امن و معماری پایگاه داده پیشرفته.', descriptionEn: 'Building scalable servers, secure authentication systems, and advanced database architectures.', icon: 'Server', order: 2 },
@@ -63,9 +66,6 @@ export default async function LocalizedHomePage({ params }: PageProps) {
       { id: '5', titleFa: 'توسعه فول‌استک (Full-Stack)', titleEn: 'Full-Stack Development', descriptionFa: 'ارائه راه‌حل‌های سرتاسری و یکپارچه از ایده اولیه و رابط کاربری تا پایگاه داده و استقرار.', descriptionEn: 'Providing end-to-end integrated solutions from initial concept and UI to database and deployment.', icon: 'Cpu', order: 5 },
       { id: '6', titleFa: 'تولید نرم‌افزار سفارشی', titleEn: 'Custom Software Development', descriptionFa: 'توسعه سیستم‌های نرم‌افزاری اختصاصی و منطبق با نیازهای منحصربه‌فرد کسب‌وکار شما.', descriptionEn: 'Development of dedicated software systems aligned with the unique needs of your business.', icon: 'Code', order: 6 },
     ];
-  }
-
-  if (technologies.length === 0) {
     technologies = [
       { id: '1', name: 'HTML', category: 'frontend' },
       { id: '2', name: 'CSS', category: 'frontend' },
@@ -85,105 +85,6 @@ export default async function LocalizedHomePage({ params }: PageProps) {
       { id: '16', name: 'Prisma ORM', category: 'database' },
       { id: '17', name: 'Git', category: 'tools' },
       { id: '18', name: 'Docker', category: 'tools' },
-    ];
-  }
-
-  if (projects.length === 0) {
-    projects = [
-      {
-        id: 'proj-1',
-        titleFa: 'سیستم جامع مدیریت منابع سازمانی (ERP) آرتین',
-        titleEn: 'Artin Enterprise Resource Planning (ERP)',
-        descriptionFa: 'یک سیستم یکپارچه برای مدیریت مالی، انبارداری، منابع انسانی و فروشگاه کسب‌وکارهای متوسط و بزرگ.',
-        descriptionEn: 'An integrated system for financial management, inventory tracking, HR, and sales for medium to large enterprises.',
-        categoryFa: 'برنامه تحت وب',
-        categoryEn: 'Web Application',
-        image: '/images/project-erp.jpg',
-        demoUrl: 'https://erp.artin.team',
-        githubUrl: 'https://github.com/artin-team/artin-erp',
-        featured: true,
-        technologies: 'Next.js, Node.js, PostgreSQL, Prisma ORM, Tailwind CSS',
-        order: 1,
-      },
-      {
-        id: 'proj-2',
-        titleFa: 'پلتفرم تجارت الکترونیک آریا مارکت',
-        titleEn: 'Aria Market E-Commerce Platform',
-        descriptionFa: 'یک فروشگاه اینترنتی فوق‌العاده سریع، واکنش‌گرا و دو زبانه با درگاه‌های پرداخت بین‌المللی و محلی.',
-        descriptionEn: 'An ultra-fast, responsive, and bilingual online store featuring international and local payment gateway integrations.',
-        categoryFa: 'فروشگاه الکترونیکی',
-        categoryEn: 'E-Commerce',
-        image: '/images/project-ecommerce.jpg',
-        demoUrl: 'https://market.artin.team',
-        githubUrl: 'https://github.com/artin-team/aria-market',
-        featured: true,
-        technologies: 'Next.js, TypeScript, Express, MongoDB, Tailwind CSS, Framer Motion',
-        order: 2,
-      },
-    ];
-  }
-
-  if (experiences.length === 0) {
-    experiences = [
-      {
-        id: 'exp-1',
-        organizationFa: 'تیم توسعه آرتین (Artin Team)',
-        organizationEn: 'Artin Team',
-        positionFa: 'تیم نرم‌افزاری و راه‌حل‌های دیجیتال',
-        positionEn: 'Software & Digital Solutions Agency',
-        startDate: '۱۳۹۹',
-        endDate: 'اکنون',
-        descriptionFa: 'ارائه راه‌حل‌های نرم‌افزاری باکیفیت و کلاس جهانی به مشتریان داخلی و بین‌المللی.',
-        descriptionEn: 'Delivering high-quality, world-class software solutions to local and international clients.',
-        achievementsFa: 'طراحی و پیاده‌سازی بیش از ۲۰ پروژه موفق کشوری و منطقه‌ای\nتوسعه سیستم‌های مقیاس‌پذیر با معماری مدرن و امنیت بالا\nکسب رضایتمندی ۹۸ درصدی از مشتریان',
-        achievementsEn: 'Designed and deployed 20+ successful national and regional projects\nDeveloped highly scalable systems with modern architecture and top-tier security\nMaintained a 98% client satisfaction rate',
-        order: 1,
-      },
-      {
-        id: 'exp-2',
-        organizationFa: 'شرکت فناوری ارتباطات افغان‌ وب',
-        organizationEn: 'AfghanWeb Communications',
-        positionFa: 'شریک تجاری و مشاور ارشد توسعه دهنده',
-        positionEn: 'Technical Partner & Lead Consultant',
-        startDate: '۱۳۹۷',
-        endDate: '۱۳۹۹',
-        descriptionFa: 'همکاری در زمینه طراحی زیرساخت پورتال‌های دولتی و سازمانی کشور.',
-        descriptionEn: 'Partnered in designing the core infrastructure for national governmental and organizational portals.',
-        achievementsFa: 'بازنویسی کدهای پورتال‌های قدیمی و افزایش ۳ برابری سرعت لود\nطراحی اولین دیتابیس توزیع‌شده برای ثبت احوال نفوس کشور',
-        achievementsEn: 'Refactored legacy portal codebases resulting in a 3x speed increase\nDesigned the first distributed database structure for national population registers',
-        order: 2,
-      },
-    ];
-  }
-
-  if (certificates.length === 0) {
-    certificates = [
-      {
-        id: 'cert-1',
-        nameFa: 'مبانی سخت‌افزار کامپیوتر',
-        nameEn: 'Computer Hardware Basics',
-        issuerFa: 'آکادمی شبکه سیسکو (Cisco)',
-        issuerEn: 'Cisco Networking Academy',
-        date: '2024',
-        imageUrl: '/images/cert-hardware.png',
-        descriptionFa: 'گواهینامه رسمی و بین‌المللی مبانی و معماری سخت‌افزار کامپیوتر از آکادمی سیسکو، شامل مهارت‌های شناخت و پیکربندی قطعات، عیب‌یابی و نگهداری سیستم‌های کامپیوتری.',
-        descriptionEn: 'Official credential from Cisco Networking Academy validating comprehensive understanding of computer hardware architecture, component troubleshooting, and foundational system configuration.',
-        verificationUrl: 'https://www.credly.com/users/nazif-yosufi.51d7d78c',
-        order: 1,
-      },
-      {
-        id: 'cert-2',
-        nameFa: 'تخصص رسمی توسعه پیشرفته با Next.js',
-        nameEn: 'Official Advanced Next.js Developer Certification',
-        issuerFa: 'آکادمی وب ورسل',
-        issuerEn: 'Vercel Web Academy',
-        date: '۲۰۲۳',
-        imageUrl: '/images/cert-nextjs.jpg',
-        descriptionFa: 'مدرک تخصصی در زمینه بهینه‌سازی کارایی، رندرینگ سمت سرور و بهینه‌سازی موتورهای جستجو با فریمورک Next.js.',
-        descriptionEn: 'Specialized credential focusing on performance optimization, server-side rendering, and SEO in the Next.js framework.',
-        verificationUrl: 'https://verify.example.org/cert/67890',
-        order: 2,
-      },
     ];
   }
 
@@ -245,12 +146,14 @@ export default async function LocalizedHomePage({ params }: PageProps) {
       />
 
       {/* 7. CERTIFICATES GRID & LIGHTBOX */}
-      <CertificatesSection
-        certificates={certificates}
-        lang={lang}
-        isFa={isFa}
-        dict={dict}
-      />
+      {certificates.length > 0 && (
+        <CertificatesSection
+          certificates={certificates}
+          lang={lang}
+          isFa={isFa}
+          dict={dict}
+        />
+      )}
 
       {/* 8. CONTACT & COLLABORATION SECTION */}
       <ContactSection
