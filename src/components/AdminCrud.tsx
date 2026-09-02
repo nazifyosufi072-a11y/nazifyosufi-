@@ -35,10 +35,6 @@ export default function AdminCrud({ resource, title, description, fields, lang }
 
   const isFa = lang === 'fa';
 
-  useEffect(() => {
-    fetchItems();
-  }, [resource]);
-
   const fetchItems = async () => {
     setLoading(true);
     try {
@@ -53,6 +49,10 @@ export default function AdminCrud({ resource, title, description, fields, lang }
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchItems();
+  }, [resource]);
 
   const handleOpenAdd = () => {
     const initialData: Record<string, any> = {};
